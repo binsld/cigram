@@ -117,6 +117,10 @@ public class UserConfig extends BaseController {
         return false;
     }
 
+    public static boolean hasFakePremiumOnAccounts() {
+        return true;
+    }
+
     public static int getMaxAccountCount() {
         return hasPremiumOnAccounts() ? 5 : 3;
     }
@@ -560,6 +564,11 @@ public class UserConfig extends BaseController {
             return false;
         }
         return user.premium;
+    }
+
+    public boolean isFakePremium()
+    {
+        return true;
     }
 
     public Long getEmojiStatus() {

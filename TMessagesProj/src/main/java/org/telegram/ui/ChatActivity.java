@@ -9616,7 +9616,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         translateButton = new TranslateButton(getContext(), this, themeDelegate) {
             @Override
             protected void onButtonClick() {
-                if (getUserConfig().isPremium() || currentChat != null && currentChat.autotranslation) {
+                if (getUserConfig().isFakePremium() || currentChat != null && currentChat.autotranslation) {
                     getMessagesController().getTranslateController().toggleTranslatingDialog(getDialogId());
                 } else {
                     MessagesController.getNotificationsSettings(currentAccount).edit().putInt("dialog_show_translate_count" + getDialogId(), 14).commit();
@@ -24113,7 +24113,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private Pattern sponsoredUrlPattern;
     private MessageObject botSponsoredMessage;
     private void addSponsoredMessages(boolean animated) {
-        if (sponsoredMessagesAdded || chatMode != 0 || !ChatObject.isChannel(currentChat) && !UserObject.isBot(currentUser) || !forwardEndReached[0] || getUserConfig().isPremium() && getMessagesController().isSponsoredDisabled() || isReport()) {
+        if (sponsoredMessagesAdded || chatMode != 0 || !ChatObject.isChannel(currentChat) && !UserObject.isBot(currentUser) || !forwardEndReached[0] || getUserConfig().isFakePremium() && getMessagesController().isSponsoredDisabled() || isReport()) {
             return;
         }
         MessagesController.SponsoredMessagesInfo res = getMessagesController().getSponsoredMessages(dialog_id);
@@ -28315,11 +28315,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         boolean showRestartTopic = !isInPreviewMode() && forumTopic != null && forumTopic.closed && !forumTopic.hidden && ChatObject.canManageTopic(currentAccount, currentChat, forumTopic);
         boolean showTranslate = (
-            getUserConfig().isPremium() || currentChat != null && currentChat.autotranslation ?
+            getUserConfig().isFakePremium() || currentChat != null && currentChat.autotranslation ?
                 getMessagesController().getTranslateController().isDialogTranslatable(getDialogId()) && !getMessagesController().getTranslateController().isTranslateDialogHidden(getDialogId()) :
                 !getMessagesController().premiumFeaturesBlocked() && preferences.getInt("dialog_show_translate_count" + did, 5) <= 0
         ) || DEBUG_TOP_PANELS;
-        boolean showBizBot = currentEncryptedChat == null && getUserConfig().isPremium() && preferences.getLong("dialog_botid" + did, 0) != 0 || DEBUG_TOP_PANELS;
+        boolean showBizBot = currentEncryptedChat == null && getUserConfig().isFakePremium() && preferences.getLong("dialog_botid" + did, 0) != 0 || DEBUG_TOP_PANELS;
         boolean showBotAd = currentUser != null && currentUser.bot && messages.size() >= 2 && botSponsoredMessage != null;
         if (showRestartTopic) {
             shownRestartTopic = true;
@@ -28455,7 +28455,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         o.add(R.drawable.msg_cancel, getString(R.string.HideAd), () -> {
                             o.dismiss();
                             if (sheet[0] != null) sheet[0].dismiss();
-                            if (getUserConfig().isPremium()) {
+                            if (getUserConfig().isFakePremium()) {
                                 botSponsoredMessage = null;
                                 updateTopPanel(true);
                                 BulletinFactory.of(this)
@@ -28469,7 +28469,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         o.setGravity(Gravity.RIGHT).show();
                     });
                 }, () -> {
-                    if (getUserConfig().isPremium()) {
+                    if (getUserConfig().isFakePremium()) {
                         botSponsoredMessage = null;
                         updateTopPanel(true);
                         BulletinFactory.of(this)
@@ -33699,7 +33699,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void hideAds() {
-        if (getUserConfig().isPremium()) {
+        if (getUserConfig().isFakePremium()) {
             BulletinFactory.of(ChatActivity.this)
                     .createAdReportedBulletin(LocaleController.getString(R.string.AdHidden))
                     .show();

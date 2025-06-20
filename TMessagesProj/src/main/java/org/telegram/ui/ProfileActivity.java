@@ -12914,7 +12914,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         }
 
         private boolean isPremiumFeatureAvailable(int feature) {
-            if (getMessagesController().premiumFeaturesBlocked() && !getUserConfig().isPremium()) {
+            if (getMessagesController().premiumFeaturesBlocked() && !getUserConfig().isFakePremium()) {
                 return false;
             }
 
